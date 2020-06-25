@@ -1,0 +1,198 @@
+body
+{
+height: 250px;
+width: 200px;
+background-color: #24282E;
+color:#35353A;
+font-weight: normal;
+}
+
+.timersRow1{
+    display:flex;
+    justify-content:space-between;
+    text-align: center;
+    height: 100px;
+    width: 200px;
+}
+
+.timerSitting{
+    flex:1;
+
+}
+.timerStanding{
+    flex:1;
+    
+}
+
+.timersRow2{
+  display:flex;
+  justify-content:center;
+  text-align: center;
+  width: 200px;
+}
+.timerActive{
+    flex:1;
+
+}
+
+.timerWater{
+    flex: 1;
+
+}
+
+.buttonBar{
+    text-align: center;
+    margin: 0.6em;
+    margin-top: 26px;
+    margin-bottom: -20px;
+   
+
+}
+
+.buttonBar button{
+    width: 90px;
+    background-color: #DEE2E5;
+    margin-top: 4px;
+    border: none;
+    border-radius: 10px;
+   
+}
+
+button:hover{
+  background:#94E0D4;
+}
+button:focus{
+  outline: #94E0D4; 
+  background:#94E0D4;
+}
+
+
+h1{
+text-align: center;
+padding-top: -100px;
+margin: 0;
+}
+
+
+.base-timer {
+  position: relative;
+  height: 80px;
+  color:#94E0D4;
+}
+
+.base-timer__svg {
+  transform: scaleX(-1);
+}
+
+.base-timer__circle {
+  fill: none;
+  stroke: none;
+}
+
+.base-timer__path-elapsed {
+  stroke-width: 7px;
+  stroke: #2C3857;
+}
+
+
+.base-timer__path-remaining {
+  stroke-width: 7px;
+  stroke-linecap: round;
+  transform: rotate(90deg);
+  transform-origin: center;
+  transition: 1s linear all;
+  fill-rule: nonzero;
+  stroke: currentColor;
+}
+
+.base-timer__label-sitting{
+  position: absolute;
+  text-align: center;
+  margin-left: -73px;
+  margin-top: 54px;
+  margin-top: 22px;
+}
+
+.base-timer__label-standing{
+  position: absolute;
+  text-align: center;
+  margin-left: -80px;
+  margin-top: 54px;
+  margin-top: 22px;
+}
+
+
+.base-timer__label-active{
+  position: absolute;
+  text-align: center;
+  margin-left: -72px;
+  margin-top: 22px;
+}
+
+.base-timer__label-water{
+  position: absolute;
+  text-align: center;
+  margin-left: -70px;
+  margin-top: 22px;
+}
+
+
+p{
+  padding: 0;
+  color: #EEEFF2;
+  margin-bottom: 0;
+  
+}
+
+#headerLogo{
+  width: 250px;
+  margin-bottom:-20px;
+
+}
+
+input {
+  width: 42px;
+  height: 14px;
+  border-radius: 8px;
+  background-color: #24282E;
+  color:#94E0D4;
+  outline: #94E0D4; 
+  
+}
+
+
+#sittingInput{
+  position: absolute;
+  text-align: center;
+  margin-left: -2px;
+  margin-top: 0px;
+  display: none;
+}
+
+#standingInput{
+  position: absolute;
+  text-align: center;
+  margin-left: 5px;
+  margin-top: 0px;
+  display: none;
+}
+
+#activeInput{
+  position: absolute;
+  text-align: center;
+  margin-left: -4px;
+  margin-top: 0px;
+  display: none;
+}
+
+#waterInput{
+  position: absolute;
+  text-align: center;
+  margin-left: -5px;
+  margin-top: 0px;
+  display: none;
+}
+
+
+
+

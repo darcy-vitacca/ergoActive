@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div class="container1">
+      <div class="header">
+      </div>
+
+      <div class="timersRow1">
+        <div class="timerSitting">
+          
+          <div class="base-timer">
+            <svg
+              class="base-timer__svg"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="base-timer__circle">
+                <circle
+                  class="base-timer__path-elapsed"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+                <path
+                  id="base-timer-path-remaining-sitting"
+                  stroke-dasharray="283"
+                  class="base-timer__path-remaining ${remainingPathColor}"
+                  d="
+                            M 50, 50
+                            m -45, 0
+                            a 45,45 0 1,0 90,0
+                            a 45,45 0 1,0 -90,0
+                          "
+                ></path>
+              </g>
+            </svg>
+            <span id="base-timer-label-sitting" class="base-timer__label-sitting"><p>SITTING</p>
+
+              <input type="number" min="1" max="180" id="sittingInput" placeholder="mins">
+
+            <div id="base-timer-label-div-sitting"></div>
+            </span>
+          </div>
+        </div>
+
+        <div class="timerStanding">
+          <div class="base-timer">
+            <svg
+              class="base-timer__svg"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="base-timer__circle">
+                <circle
+                  class="base-timer__path-elapsed"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+                <path
+                  id="base-timer-path-remaining-standing"
+                  stroke-dasharray="283"
+                  class="base-timer__path-remaining ${remainingPathColor}"
+                  d="
+                            M 50, 50
+                            m -45, 0
+                            a 45,45 0 1,0 90,0
+                            a 45,45 0 1,0 -90,0
+                          "
+                ></path>
+              </g>
+            </svg>
+            <span id="base-timer-label-standing" class="base-timer__label-standing"><p>STANDING</p>
+              <input type="number" min="1" max="180" id="standingInput"
+              placeholder="mins">
+              
+            <div id="base-timer-label-div-standing"></div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="timersRow2">
+        <div class="timerActive">
+          <div class="base-timer">
+            <svg
+              class="base-timer__svg"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="base-timer__circle">
+                <circle
+                  class="base-timer__path-elapsed"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+                <path
+                  id="base-timer-path-remaining-active"
+                  stroke-dasharray="283"
+                  class="base-timer__path-remaining ${remainingPathColor}"
+                  d="
+                            M 50, 50
+                            m -45, 0
+                            a 45,45 0 1,0 90,0
+                            a 45,45 0 1,0 -90,0
+                          "
+                >
+                </path>
+              </g>
+            </svg>
+            <span id="base-timer-label-active" class="base-timer__label-active"><p>ACTIVE</p>
+              <div id="base-timer-label-div-active"></div>
+              <input type="number" min="1" max="180" id="activeInput"
+              placeholder="mins">
+            </span>
+          </div> 
+        </div>
+        <div class="timerWater">
+        
+           <div class="timerActive">
+           
+          <div class="base-timer">
+            <svg
+              class="base-timer__svg"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="base-timer__circle">
+                <circle
+                  class="base-timer__path-elapsed"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+                <path
+                  id="base-timer-path-remaining-water"
+                  stroke-dasharray="283"
+                  class="base-timer__path-remaining ${remainingPathColor}"
+                  d="
+                            M 50, 50
+                            m -45, 0
+                            a 45,45 0 1,0 90,0
+                            a 45,45 0 1,0 -90,0
+                          "
+                >
+                </path>
+              </g>
+            </svg>
+            <span id="base-timer-label-water" class="base-timer__label-water"> <p>WATER</p>
+              <div id="base-timer-label-div-water"></div>
+              <input type="number" min="1" max="180" id="waterInput"
+              placeholder="mins">
+            </span>
+          </div> 
+        </div>
+        </div>
+      </div>
+
+      <div class="buttonBar" id="buttonBar">
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="editBtn">Edit</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+  
+</html>

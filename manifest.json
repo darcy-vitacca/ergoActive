@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "ergoActive",
+  "version": "1.0",
+  "description": "A chrome extension to promote desk health and to remind you to constantly change ",
+  "icons": {
+    "16": "images/eactive16.png",
+    "32": "images/eactive32.png",
+    "48": "images/eactive48.png",
+    "128": "images/eactive128.png"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  }
+  ,
+  "browser_action":{
+    "default_icon": "images/eactive16.png",
+    "default_popup":"popup.html",
+    "default_title":"View ergoActive"
+  },
+  "permissions":[
+    "storage",
+    "notifications"
+  ],
+  "web_accessible_resources": [
+    "images/*.png"]
+  }
