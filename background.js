@@ -1,9 +1,24 @@
 let TIME_LIMIT;
 let WATER_TIME_LIMIT;
-let sittingDefault;
-let standingDefault;
-let activeDefault;
-let waterDefault;
+
+let sittingDefault = chrome.storage.sync.get(function(result) {
+  sittingDefault= result.sittingDefault
+  TIME_LIMIT = sittingDefault
+  return sittingDefault
+});
+let standingDefault = chrome.storage.sync.get(function(result) {
+  standingDefault = result.standingDefault
+  return standingDefault
+});
+let activeDefault = chrome.storage.sync.get(function(result) {
+  activeDefault = result.activeDefault
+  return activeDefault
+  });
+let waterDefault = chrome.storage.sync.get(function(result) {
+  waterDefault = result.waterDefault
+  WATER_TIME_LIMIT = waterDefault;
+  return waterDefault
+});
 
 //Get defaults from storage
 chrome.runtime.onInstalled.addListener(function (details) {
@@ -15,32 +30,34 @@ chrome.runtime.onInstalled.addListener(function (details) {
     waterDefault :30 * 60
   }
 
-chrome.storage.sync.set(defaultSettings, function() {
+  chrome.storage.sync.set(defaultSettings, function() {
 
-  sittingDefault = chrome.storage.sync.get(function(result) {
-    sittingDefault= result.sittingDefault
-    TIME_LIMIT = sittingDefault
-    return sittingDefault
+    sittingDefault = chrome.storage.sync.get(function(result) {
+      sittingDefault= result.sittingDefault
+      TIME_LIMIT = sittingDefault
+      return sittingDefault
+    });
+
+    standingDefault = chrome.storage.sync.get(function(result) {
+      standingDefault = result.standingDefault
+      return standingDefault
+    });
+
+    activeDefault = chrome.storage.sync.get(function(result) {
+    activeDefault = result.activeDefault
+    return activeDefault
+    });
+
+    waterDefault = chrome.storage.sync.get(function(result) {
+      waterDefault = result.waterDefault
+      WATER_TIME_LIMIT = waterDefault;
+      return waterDefault
+    });
   });
 
-standingDefault = chrome.storage.sync.get(function(result) {
-  standingDefault = result.standingDefault
-  return standingDefault
- });
-
-activeDefault = chrome.storage.sync.get(function(result) {
- activeDefault = result.activeDefault
- return activeDefault
 });
 
-waterDefault = chrome.storage.sync.get(function(result) {
-  waterDefault = result.waterDefault
-  WATER_TIME_LIMIT = waterDefault;
-  return waterDefault
- });
-});
 
-});
 
  //Timer
 let currentTimerName;
@@ -58,6 +75,7 @@ let waterTimerName = 'water'
 
 //Notifications
 let iconNotif = chrome.runtime.getURL('images/eactive128.png')
+
 let notif = {
   type: 'basic',
   iconUrl: iconNotif,
@@ -74,115 +92,118 @@ let runNotif = function(){
 //Start button
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === "start"){
-  console.log("Recieved Start");
-  sendResponse({ message: "hi to you" });
-  if (activated === false){
-    activated = true;
-    waterActivated = true;
-    if (currentTimerName === undefined){
-      console.log("This is Sitting")
-      startTimer();
-      waterTimer();
+    console.log("Recieved Start");
+    sendResponse({ message: "hi to you" });
+    if (activated === false){
+      activated = true;
+      waterActivated = true;
+      if (currentTimerName === undefined){
+        console.log("Start sitting")
+        startTimer();
+        waterTimer();
 
-    } else if (currentTimerName === 'sitting' ){
-      console.log("This is Standing")
-      startTimer();
-      waterTimer();
+      } else if (currentTimerName === 'sitting' ){
+        console.log("Start sitting")
+        startTimer();
+        waterTimer();
 
-    }  else if (currentTimerName === 'standing'){
-      console.log("This is Standing")
-      startTimerStanding();
-      waterTimer();
+      }  else if (currentTimerName === 'standing'){
+        console.log("Start Standing")
+        startTimerStanding();
+        waterTimer();
 
-    } else if (currentTimerName === 'active'){
-      console.log("This is  Active")
-      startTimerActive();
-      waterTimer();
-  
-    } else if (currentTimerName === ''){
-      console.log("Program hasn't started")
-    } else {
-      console.log("Nothing")
-    }
+      } else if (currentTimerName === 'active'){
+        console.log(" Start Active")
+        startTimerActive();
+        waterTimer();
     
-  }
+      } else if (currentTimerName === ''){
+        console.log("Program hasn't started")
+      } else {
+        console.log("Nothing")
+      }
+      
+    }
 }
 });
 
+//Pause function
 let pauseCheck  = function(){
   onTimesUp();
   onTimesUpWater();
   waterTimer();
 }
+
 //Pause button
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === "pause"){
-  console.log("Recieved Pause");
-  sendResponse({ message: "hi to you" });
-  if (activated === true){
-    activated = false;
-    waterActivated = false;
-    //then pause timer
-    if (currentTimerName === undefined){
-      console.log("This is Sitting")
-      pauseCheck();
-      startTimer();
+    console.log("Recieved Pause");
+    sendResponse({ message: "hi to you" });
+    if (activated === true){
+      activated = false;
+      waterActivated = false;
 
-    } else if (currentTimerName === 'sitting' ){
-      console.log("This is Sitting")
-      pauseCheck();
-      startTimer();
+      //Pause timer and water timer
+      if (currentTimerName === undefined){
+        console.log("Start Sitting")
+        pauseCheck();
+        startTimer();
+
+      } else if (currentTimerName === 'sitting' ){
+        console.log("Start Sitting")
+        pauseCheck();
+        startTimer();
 
 
-    }  else if (currentTimerName === 'standing'){
-      console.log("This is Standing")
-      pauseCheck();
-      startTimerStanding();
+      } else if (currentTimerName === 'standing'){
+        console.log("Start Standing")
+        pauseCheck();
+        startTimerStanding();
 
-    } else if (currentTimerName === 'active'){
-      console.log("This is  Active")
-      pauseCheck();
-      startTimerActive();
-  
-    } else if (currentTimerName === ''){
-      console.log("Program hasn't started")
-      onTimesUp();
-      onTimesUpWater();
-    } else {
-      console.log("Nothing")
-      onTimesUp();
-      onTimesUpWater();
+      } else if (currentTimerName === 'active'){
+        console.log("Start Active")
+        pauseCheck();
+        startTimerActive();
+    
+      } else if (currentTimerName === ''){
+        console.log("Program hasn't started")
+        onTimesUp();
+        onTimesUpWater();
+      } else {
+        console.log("Nothing")
+        onTimesUp();
+        onTimesUpWater();
+      }
+    } else{
+      console.log("Nothing is actiavted")
     }
-  } else{
-    console.log("Nothing is actiavted")
-  }
-  }
+    }
 });
 
 //Reset
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
-
   if (request.message === "reset"){
     console.log("Recieved Reset");
-    //timer
+
+    //Timer reset
     TIME_LIMIT = sittingDefault
     timePassed = 0 
     currentTimerName = undefined
     timeLeft = TIME_LIMIT
     activated = false;
-    //water timer
+
+    //Water timer reset
     WATER_TIME_LIMIT = waterDefault
     timeLeftWater = WATER_TIME_LIMIT
     waterTimerName = waterTimerName
     timePassedWater = 0;
     waterActivated = false;
 
-
-
     onTimesUp();
     onTimesUpWater();
-    // send over default values again
+
+    //Re-send over default values again
     let currentTimer = {
       currentTimeLimit: TIME_LIMIT,
       timeLeft : timeLeft,
@@ -204,9 +225,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 //edit 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  
+  //Sets new defaults in chrome storage if recieved
   if (request.message === "edit"){
 
-      sittingDefault = chrome.storage.sync.get(function(result) {
+    sittingDefault = chrome.storage.sync.get(function(result) {
       sittingDefault= result.sittingDefault
       TIME_LIMIT = sittingDefault
       return sittingDefault
@@ -225,20 +248,26 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     waterDefault = chrome.storage.sync.get(function(result) {
       waterDefault = result.waterDefault
       WATER_TIME_LIMIT = waterDefault;
+      console.log(`New defaults: sitting default: ${sittingDefault} standing default: ${standingDefault} water default: ${activeDefault} water default: ${waterDefault}`)
       return waterDefault
     });
+
   }
+
 sendResponse("edit recieved")
 });
 
 
-
+//Popup connection
 chrome.runtime.onConnect.addListener(function(port) {
-  console.assert(port.name == "knockknock");
+
+  console.assert(port.name == "popup");
+
   port.onMessage.addListener(function(msg) {
-    let joke = msg.joke 
-    console.log(joke)
-    if (msg.joke === "Knock knock"){
+
+    console.log(msg.runPopup)
+    
+    if (msg.runPopup === "popupInit"){
         let currentTimer = {
           currentTimeLimit: TIME_LIMIT,
           timeLeft : timeLeft,
@@ -262,12 +291,8 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 //WATER
 function waterTimer() {
-
-  console.log(waterActivated)
   if (waterActivated === true){
     waterTimerInterval =  setInterval(() => {
-      console.log("WATER  :" + timeLeftWater)
-  
       timePassedWater = timePassedWater += 1;
       timeLeftWater = WATER_TIME_LIMIT - timePassedWater;
     
@@ -276,13 +301,14 @@ function waterTimer() {
         notif['message'] =  'Keep yourself hydrated throughout the day for increased producivtiy.'
         runNotif();
         onTimesUpWater();
+        console.log("Water time")
         WATER_TIME_LIMIT = waterDefault;
         timePassedWater = 0;
         waterTimer();
       }
     }, 1000);
   }else {
-    console.log("paused")
+    console.log("Water timer paused")
   }
 }
 
@@ -291,11 +317,8 @@ function waterTimer() {
 
 // 1st timer
 function startTimer() {
-  console.log(activated)
   if (activated === true){
     timerInterval = setInterval(() => {
-      console.log(timeLeft)
-      console.log(currentTimerName)
       timePassed = timePassed += 1;
       timeLeft = TIME_LIMIT - timePassed;
       currentTimerName = 'sitting'
@@ -304,25 +327,22 @@ function startTimer() {
         notif['title'] = 'Stand time'
         notif['message'] =  'The alloted sitting time has passed time to stand.'
         runNotif();
-        console.log("stand")
         onTimesUp();
+        console.log("Stand time")
         TIME_LIMIT = standingDefault;
         timePassed = 0;
         startTimerStanding();
       }
     }, 1000);
   }else {
-    console.log("paused")
+    console.log("Standing timer paused")
   }
 }
 
 // 2nd timer
 function startTimerStanding() {
-  console.log(activated)
   if (activated === true){
   timerInterval = setInterval(() => {
-    console.log(timeLeft)
-    console.log(currentTimerName)
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
     currentTimerName = 'standing'
@@ -339,16 +359,13 @@ function startTimerStanding() {
     }
   }, 1000);
 }else {
-  console.log("paused")
+  console.log("Sitting timer paused")
 }
 }
 //3rd timer
 function startTimerActive() {
-  console.log(activated)
   if (activated === true){
   timerInterval = setInterval(() => {
-    console.log(timeLeft)
-    console.log(currentTimerName)
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
     currentTimerName = 'active'
@@ -365,7 +382,7 @@ function startTimerActive() {
     }
   }, 1000);
 }else {
-  console.log("paused")
+  console.log("Active timer paused")
 }
 }
 

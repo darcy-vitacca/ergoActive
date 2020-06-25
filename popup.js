@@ -10,10 +10,11 @@ let standingInput = document.getElementById("standingInput");
 let activeInput = document.getElementById("activeInput");
 let waterInput = document.getElementById("waterInput");
 
+//Timer Limit
 let TIME_LIMIT;
 let WATER_TIME_LIMIT;
 
-//Default label 
+//Default labels
 let sittingDefault = chrome.storage.sync.get(function(result) {
   sittingDefault= result.sittingDefault
   sittingId.innerHTML = formatTime(sittingDefault);
@@ -36,8 +37,6 @@ let waterDefault = chrome.storage.sync.get(function(result) {
   WATER_TIME_LIMIT = waterDefault;
   return waterDefault
  });
-
-
 
 //Buttons
 let btnBar = document.getElementById("buttonBar");
@@ -78,6 +77,7 @@ let pauseButton = false;
 let resetButton = false;
 let editButton = false;
 
+//Timer circle formatting 
 let sittingCircleFunc = function (){
   sittingId.innerHTML = formatTime(timeLeft);
   setCircleDasharray(sittingCircle);  
@@ -97,17 +97,16 @@ let waterCircleFunc = function(){
   setCircleDasharrayWater(waterCircle);
 }
 
-
 let resetCircleFunc = function(id, timeDefault, circle){
   id.innerHTML = formatTime(timeDefault);
   setCircleDasharray(circle);
 }
 
 
-var port = chrome.runtime.connect({name: "knockknock"});
-console.log("running")
+//Port connection to background
+var port = chrome.runtime.connect({name: "popup"});
 
-port.postMessage({joke: "Knock knock"});
+port.postMessage({runPopup: "popupInit"});
 port.onMessage.addListener(function(msg) {
   console.log(msg)
   //Timer
@@ -117,58 +116,43 @@ port.onMessage.addListener(function(msg) {
   timePassed = msg.currentTimePassed
   activated = msg.activated
 
-  console.log(activated)
-  console.log(TIME_LIMIT)
-  console.log(timeLeft)
-  console.log(currentTimerName)
-  console.log(timePassed)
-
   //Water Timer
   WATER_TIME_LIMIT = msg.currentTimeLimitWater
   timeLeftWater = msg.timeLeftWater
   waterTimerName = msg.waterName
   timePassedWater = msg.currentTimePassedWater 
   waterActivated = msg.waterActivated
-
-  console.log(WATER_TIME_LIMIT)
-  console.log(timeLeftWater)
-  console.log(waterTimerName)
-  console.log(timePassedWater)
-  console.log(waterActivated)
-  
   
   if (currentTimerName === 'sitting'){
-    console.log("This is Sitting")
+    
     if (activated === true){
+      console.log("Start Sitting")
       startTimer();
       waterTimer();
     } else {
-      console.log("else sittingId")
       sittingCircleFunc();
       waterCircleFunc();
     }
   } else if (currentTimerName === 'standing'){
-    console.log("This is Standing")
     if (activated === true){
+      console.log("Start Standing")
       startTimerStanding();
       waterTimer();
     } else {
-      console.log("else standingId")
       standingCircleFunc();
       waterCircleFunc();
     }
   } else if (currentTimerName === 'active'){
-    console.log("This is  Active")
     if (activated === true){
-    startTimerActive();
-    waterTimer();
+      console.log("Start Active")
+      startTimerActive();
+      waterTimer();
     } else {
-      console.log("else")
       activeCircleFunc();
       waterCircleFunc();
     }
   } else{
-    console.log("Nothing")
+    console.log("Nothing activated")
   }
 });
 
@@ -187,22 +171,22 @@ startBtn.addEventListener("click", function () {
       waterActivated = true;
 
       if (currentTimerName === undefined){
-        console.log("This is Sitting")
+        console.log("Start Sitting")
         startTimer();
         waterTimer();
 
       } else if (currentTimerName === 'sitting' ){
-        console.log("This is Standing")
+        console.log("Start Standing")
         startTimer();
         waterTimer();
 
       }  else if (currentTimerName === 'standing'){
-        console.log("This is Standing")
+        console.log("Start Standing")
         startTimerStanding();
         waterTimer();
 
       } else if (currentTimerName === 'active'){
-        console.log("This is  Active")
+        console.log("Start Active")
         startTimerActive();
         waterTimer();
   
@@ -213,9 +197,8 @@ startBtn.addEventListener("click", function () {
         console.log("Nothing")
       } 
     }
-    console.log("Clicked");
     chrome.runtime.sendMessage({message: "start"}, function (response){
-      console.log(response.message);
+      console.log("Start Clicked");
     });
 
   }else{
@@ -232,9 +215,8 @@ pauseBtn.addEventListener("click", function () {
     activated = false;
       onTimesUp();
       onTimesUpWater();
-      console.log("Pause");
       chrome.runtime.sendMessage({message: "pause"}, function (response){
-        console.log(response.message);
+        console.log("Pause clicked");
       });
 
   }else{
@@ -244,37 +226,29 @@ pauseBtn.addEventListener("click", function () {
 
 //Restart
 restartBtn.addEventListener("click", function () {
-  // alert("Restarted");
+
   startButton = false;
   pauseButton = false;
 
   chrome.runtime.sendMessage({message: "reset"}, function (response){
     onTimesUp();
     onTimesUpWater();
+
+    //Timer timer
     TIME_LIMIT = response.currentTimeLimit
     timeLeft = response.timeLeft
     currentTimerName = response.currentTimerName
     timePassed = response.currentTimePassed
     activated = response.activated
 
-    console.log(activated)
-    console.log(TIME_LIMIT)
-    console.log(timeLeft)
-    console.log(currentTimerName)
-    console.log(timePassed)
-
+    //Water timer
     WATER_TIME_LIMIT = response.currentTimeLimitWater
     timeLeftWater = response.timeLeftWater
     waterTimerName = response.waterName
     timePassedWater = response.currentTimePassedWater 
     waterActivated = response.waterActivated
 
-    console.log(WATER_TIME_LIMIT)
-    console.log(timeLeftWater)
-    console.log(waterTimerName)
-    console.log(timePassedWater)
-    console.log(waterActivated)
-   
+    //Clear circles 
     resetCircleFunc(sittingId,sittingDefault,sittingCircle );
     resetCircleFunc(standingId,standingDefault,standingCircle );
     resetCircleFunc(activeId,activeDefault, activeCircle );
@@ -287,17 +261,18 @@ restartBtn.addEventListener("click", function () {
   waterId.innerHTML =  waterDefault;
 });
 
-
-//Change all the timer limits to variables and update all the code
 //Edit
 editBtn.addEventListener("click", function () {
+
   pauseBtn.click();
- 
+
   if (editButton === false){
+
+      // UI function
       startBtn.disabled = true;
       pauseBtn.disabled = true;
       restartBtn.disabled = true;
-      console.log("click")
+  
       editBtn.innerHTML = "Save"
       editButton = true;
 
@@ -311,30 +286,29 @@ editBtn.addEventListener("click", function () {
       activeInput.style.display = "block"
       waterInput.style.display = "block"
     
-      // Pause timers // run pause function
-      // Change timer divs to textboxes
-      // change text in pause from edit to save and grey out all other buttons. disable them
-
   } else {
-      if ((sittingInput.value && standingInput.value && activeInput.value && waterInput.value) < 1){
+       // checks if values entered are above 1min
+      if ((sittingInput.value || standingInput.value || activeInput.value || waterInput.value) < 1){
+
+        // checks if values are entered above 
         alert("Please enter a value greater than 1 minute on each item")
         sittingId.innerHTML = sittingDefault;
         standingId.innerHTML = standingDefault;
         activeId.innerHTML = activeDefault;
         waterId.innerHTML = waterDefault;
+        
       }else {
+        //set new default settings
         let defaultSettings = {
           sittingDefault :  sittingInput.value * 60,
           standingDefault: standingInput.value * 60,
           activeDefault : activeInput.value * 60,
           waterDefault :waterInput.value * 60
-          
         }
-          
+
         chrome.storage.sync.set(defaultSettings, function() {
           console.log(defaultSettings);
-         
-          
+
           sittingId.innerHTML = formatTime(defaultSettings["sittingDefault"]);
           standingId.innerHTML = formatTime(defaultSettings["standingDefault"]);
           activeId.innerHTML = formatTime(defaultSettings["activeDefault"]);
@@ -347,17 +321,13 @@ editBtn.addEventListener("click", function () {
         chrome.runtime.sendMessage({message: "edit"}, function (response){
           console.log(response)
         });
-  
-  
+
         sittingDefault = defaultSettings["sittingDefault"];
         standingDefault = defaultSettings["standingDefault"];
         activeDefault = defaultSettings["activeDefault"];
         waterDefault = defaultSettings["waterDefault"];
   
-        // When okay is pressed set the new times to storage 
-        // reload background script after edit
-        //after pressed again turn edit back to false
-  
+        // UI function
         sittingInput.style.display = "none"
         standingInput.style.display = "none"
         activeInput.style.display = "none"
@@ -367,15 +337,13 @@ editBtn.addEventListener("click", function () {
         standingId.style.display = "block"
         activeId.style.display = "block"
         waterId.style.display = "block"
-        
-       
+
         editBtn.innerHTML = "Edit"
         console.log("click")
         editButton = false;
         startBtn.disabled = false;
         pauseBtn.disabled = false;
         restartBtn.disabled = false;
-
       }     
   }
 });
@@ -387,14 +355,13 @@ editBtn.addEventListener("click", function () {
 //WATER
 function waterTimer() {
     waterTimerInterval =  setInterval(() => {
-      console.log("WATER  :" + timeLeftWater)
+  
       timePassedWater = timePassedWater += 1;
       timeLeftWater = WATER_TIME_LIMIT - timePassedWater;
 
       waterId.innerHTML = formatTimeWater(timeLeftWater);
       setCircleDasharrayWater(waterCircle);
     
-  
       if (timeLeftWater === 0) {
         onTimesUpWater();
         WATER_TIME_LIMIT = waterDefault;
@@ -410,13 +377,11 @@ function waterTimer() {
 //SITTING
 function startTimer() {
   timerInterval = setInterval(() => {
+
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
     currentTimerName = 'sitting'
-    console.log(currentTimeLimit)
-    console.log(timeLeft)
-    console.log(currentTimerName)
-
+   
     sittingCircleFunc();
 
     if (timeLeft === 0) {
@@ -433,12 +398,10 @@ function startTimer() {
 //STANDING
 function startTimerStanding() {
   timerInterval = setInterval(() => {
+
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
     currentTimerName = 'standing'
-    console.log(currentTimeLimit)
-    console.log(timeLeft)
-    console.log(currentTimerName)
 
     standingCircleFunc();
 
@@ -455,13 +418,10 @@ function startTimerStanding() {
 //ACTIVE
 function startTimerActive() {
   timerInterval = setInterval(() => {
+
     timePassed = timePassed += 1;
     timeLeft = TIME_LIMIT - timePassed;
     currentTimerName = 'active'
-    console.log(currentTimeLimit)
-    console.log(timeLeft)
-    console.log(currentTimerName)
-    // console.log(timePassed)
 
     activeCircleFunc();
 
